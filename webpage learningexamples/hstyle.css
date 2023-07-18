@@ -1,0 +1,21 @@
+body {
+    background-color: silver;
+    padding: 20px;
+    font-family: Arial, Verdana, sans-serif;
+  }
+  h1 {
+    background-color: rgba(255,255,255,0.5);
+    color: #64645A;
+    padding: inherit;
+  }
+  p {
+    padding: 50px;
+    margin: 0px;
+  }
+  p#five { background-color: #ff6060; }
+  p#four { background-color: #ff8f20; }
+  p#three { background-color: #ffc140; }
+  p#two { background-color: #ffe775; }
+  p#one { background-color: #ffffcc; }
+  p#ts { background-color: #00faf4; }
+  p#td { background-color: #5ebaff; }

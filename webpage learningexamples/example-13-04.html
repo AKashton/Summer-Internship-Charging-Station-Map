@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Submission form</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="css/leaflet.css">
+    <script src="js/leaflet.js"></script>
+    <link rel="stylesheet" href="css/leaflet.draw.css">
+	<script src="js/leaflet.draw.js"></script>
+    <script src="js/jquery.js"></script>
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+        }
+        html, body, #map {
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <script>
+    
+// Add map and tile layer
+var map = L.map("map", {center: [31.262218, 34.801472], zoom: 13});
+L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", 
+    {attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}
+).addTo(map);
+
+// Create feature group for drawn items
+var drawnItems = L.featureGroup().addTo(map);
+
+// Add draw control
+new L.Control.Draw({
+    draw : {
+        polygon : true,
+        polyline : true,
+        rectangle : false,     // Rectangles disabled
+        circle : false,        // Circles disabled 
+        circlemarker : false,  // Circle markers disabled
+        marker: true
+	},
+	edit : {
+        featureGroup: drawnItems
+    }
+}).addTo(map);
+
+// On draw - create editable popup
+map.on("draw:created", function(e) {
+    e.layer.addTo(drawnItems);
+    createFormPopup();
+});
+
+// On edit or delete - Close popup
+map.on("draw:editstart", function(e) {
+    drawnItems.closePopup();
+});
+map.on("draw:deletestart", function(e) {
+    drawnItems.closePopup();
+});
+map.on("draw:editstop", function(e) {
+    drawnItems.openPopup();
+});
+map.on("draw:deletestop", function(e) {
+    if(drawnItems.getLayers().length > 0) {
+        drawnItems.openPopup();
+    }
+});
+
+// On submit
+$("body").on("click", "#submit", setData);
+
+// Create editable popup
+function createFormPopup() {
+    var popupContent = 
+        '<form>' + 
+        'Description:<br><input type="text" id="input_desc"><br>' +
+        'Name:<br><input type="text" id="input_name"><br>' +
+        '<input type="button" value="Submit" id="submit">' + 
+        '</form>';
+    drawnItems.bindPopup(popupContent).openPopup();
+}
+
+// Submission
+function setData() {
+
+    // Get user name and description
+    var enteredUsername = $("#input_name").val();
+    var enteredDescription = $("#input_desc").val();
+    
+    // Print user name and description
+    console.log(enteredUsername);
+    console.log(enteredDescription);
+    
+    // Get and print GeoJSON for each drawn layer
+    drawnItems.eachLayer(function(layer) {
+        var drawing = JSON.stringify(layer.toGeoJSON().geometry);
+        console.log(drawing);
+    });
+    
+    // Clear drawn items layer
+    drawnItems.closePopup();
+    drawnItems.clearLayers();
+}
+
+    </script>
+</body>
+</html>

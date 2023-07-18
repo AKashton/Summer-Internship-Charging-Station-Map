@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Basic map</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="css/leaflet.css">
+    <script src="js/leaflet.js"></script>
+    <script src="js/jquery.js"></script>
+    <style>
+        html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+        #map { 
+    width: 60%;
+    height: 100%;
+    float: left;
+}
+        #text {
+    height: 100%;
+    width: 40%;
+    float: right;
+}
+        #geojsontext {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    width: 90%;
+    height: 80%;
+}
+        #submit {
+    margin: 20px;
+}
+    </style>
+</head>
+<body>
+
+<div id="map"></div>
+<div id="text">
+    <textarea id="geojsontext"></textarea>
+    <input type="button" id="submit" value="Submit">
+</div>
+<script>
+
+// Create variable to hold map element, give initial settings to map
+var map = L.map("map", {center: [61.2176, -149.8997], zoom: 17});
+
+// Add OpenStreetMap tile layer to map element
+L.tileLayer(
+            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", 
+            {attribution: '&copy; <a href="http://' + 
+            'www.openstreetmap.org/copyright">OpenStreetMap</a>'}
+        ).addTo(map);
+
+//add a marker to map
+let pnt = L.marker([61.2176, -149.8999]).addTo(map);
+
+//add a circle marker to map
+L.circle([61.2176, -149.8980], 
+    {radius: 50, color: "black", fillColor: "red"}).addTo(map);
+
+//GeoJSON layer additon
+var states = {
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {"party": "Republican"},
+      "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+              [[-104.05, 48.99], [-97.22,  48.98], 
+              [-96.58,  45.94], [-104.03, 45.94], 
+              [-104.05, 48.99]]
+          ]
+      }
+    }, 
+    {
+      "type": "Feature",
+      "properties": {"party": "Democrat"},
+      "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+              [[-109.05, 41.00], [-102.06, 40.99], 
+              [-102.03, 36.99], [-109.04, 36.99], 
+              [-109.05, 41.00]]
+          ]
+      }
+    }
+  ]
+};
+L.geoJSON(states).addTo(map);
+
+//interaction between text box and map
+var layers = L.layerGroup().addTo(map);
+
+function show_geojson() {
+    layers.clearLayers();                // Remove old GeoJSON
+    let txt = document.getElementById("geojsontext").value;
+    txt = JSON.parse(txt);
+    L.geoJSON(txt).addTo(layers);        // Display new GeoJSON
+}
+document.getElementById("submit").addEventListener("click", show_geojson);
+
+</script>
+
+</body>
+</html>

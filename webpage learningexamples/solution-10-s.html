@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Genus/species dropdown menu</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="css/leaflet.css">
+    <script src="js/leaflet.js"></script>
+    <script src="js/jquery.js"></script>
+    <style>
+    	body {
+            padding: 0;
+            margin: 0;
+        }
+        html, body, #map {
+            height: 100%;
+            width: 100%;
+        }
+        .dropdown {
+            min-width: 15em;
+            padding: 5px 10px 10px 10px;
+            background-color: rgba(255,255,255,0.8);
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            border-radius: 5px;
+        }
+        .dropdown h3 {
+            margin: 5px 0px 0px 0px;
+        }
+        #species, #genus {
+            width: 100%;
+			padding: 6px 8px;
+			font: 14px/16px Arial, Helvetica, sans-serif;
+			background-color: rgba(255,255,255,0.8);
+			box-shadow: 0 0 15px rgba(0,0,0,0.2);
+			border-radius: 5px;
+		}
+    </style>
+</head>
+<body>
+	<div id="map"></div>
+	<script>
+	
+var map = L.map("map").setView([32, 35], 8);
+
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+	maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+}).addTo(map);
+
+// Define variables
+var plantsLayer = L.layerGroup().addTo(map);
+var url = "http://159.89.13.241/sql?q=";
+var sqlQuery = "SELECT DISTINCT name_lat FROM plants ORDER BY name_lat";
+var species = {};
+
+// Add empty dropdown menu
+var legend = L.control({position: "topleft"});
+legend.onAdd = function(map) {
+    var div = L.DomUtil.create("div", "dropdown");
+    div.innerHTML = 
+        '<h3>Choose genus</h3>' +
+        '<select id="genus"></select><br>' +
+        '<h3>Choose species</h3>' +
+        '<select id="species"></select>';
+    return div;
+};
+legend.addTo(map);
+
+// Function to update species dropdown menu
+function updateSp() {
+	var selGenus = $("#genus").val();
+	$("#species").empty();
+	$.each(species[selGenus], function(key, value) {
+    	$("#species").append("<option>" + value + "</option>");
+	});
+	displaySpecies();
+}
+
+// Function to reload and display species observations
+function displaySpecies() {
+    var valueSelected = $("#species").val();
+    var sqlQuery2 = "SELECT name_lat, geometry AS geom FROM plants WHERE name_lat = '" + valueSelected + "'";
+    $.getJSON(url + sqlQuery2, function(data) {
+        plantsLayer.clearLayers();
+        L.geoJSON(data, {
+		    onEachFeature: function(feature, layer) {
+		        layer.bindPopup("<i>" + feature.properties.name_lat + "</i>");
+	      	}
+        }).addTo(plantsLayer);
+    });
+}
+
+// Load species list & bind event listeners
+$.getJSON(url + sqlQuery, function(data) {
+    $.each(data.features, function(key, value) {
+        var tmp = value.properties.name_lat;
+        var tmp_split = tmp.split(" ");
+        if(species[tmp_split[0]] === undefined) {
+            species[tmp_split[0]] = [tmp];
+            } else {
+                species[tmp_split[0]].push(tmp);
+            }
+	});
+	$.each(species, function(key, value) {
+        $("#genus").append("<option>" + key + "</option>");
+	});
+	$("#genus").on("change", updateSp);
+	$("#species").on("change", displaySpecies);
+	updateSp();
+});
+
+	</script>
+</body>
+</html>
+

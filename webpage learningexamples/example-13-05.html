@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Collaborative app</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="css/leaflet.css">
+    <script src="js/leaflet.js"></script>
+    <link rel="stylesheet" href="css/leaflet.draw.css">
+	<script src="js/leaflet.draw.js"></script>
+    <script src="js/jquery.js"></script>
+	<style>
+        body {
+            padding: 0;
+            margin: 0;
+        }
+        html, body, #map {
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <script>
+
+// Add map and tile layer
+var map = L.map("map", {center: [31.262218, 34.801472], zoom: 13});
+L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", 
+    {attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}
+).addTo(map);
+
+// Create feature group for drawn items & layer group for previously drawn items
+var drawnItems = L.featureGroup().addTo(map);
+var cartoData = L.layerGroup().addTo(map);
+
+// Add Data from Carto using the SQL API
+var url = "https://michaeldorman.carto.com/api/v2/sql?format=GeoJSON&q=";
+var sqlQuery = "SELECT the_geom, description, name FROM beer_sheva";
+function addPopup(feature, layer) {
+    layer.bindPopup(
+        feature.properties.description + 
+        "<br>Submitted by " + feature.properties.name
+    );
+}
+$.getJSON(url + sqlQuery, function(data) {
+    L.geoJSON(data, {onEachFeature: addPopup}).addTo(cartoData);
+});
+
+// Add draw control
+new L.Control.Draw({
+    draw : {
+        polygon : true,
+        polyline : true,
+        rectangle : false,     // Rectangles disabled
+        circle : false,        // Circles disabled 
+        circlemarker : false,  // Circle markers disabled
+        marker: true
+	},
+	edit : {
+        featureGroup: drawnItems
+    }
+}).addTo(map);
+
+// On draw - create editable popup
+map.on("draw:created", function(e) {
+    e.layer.addTo(drawnItems);
+    createFormPopup();
+});
+
+// On edit or delete - Close popup
+map.on("draw:editstart", function(e) {
+    drawnItems.closePopup();
+});
+map.on("draw:deletestart", function(e) {
+    drawnItems.closePopup();
+});
+map.on("draw:editstop", function(e) {
+    drawnItems.openPopup();
+});
+map.on("draw:deletestop", function(e) {
+    if(drawnItems.getLayers().length > 0) {
+        drawnItems.openPopup();
+    }
+});
+
+// On submit
+$("body").on("click", "#submit", setData);
+
+// Create editable popup
+function createFormPopup() {
+    var popupContent = 
+        '<form>' + 
+        'Description:<br><input type="text" id="input_desc"><br>' +
+        'Name:<br><input type="text" id="input_name"><br>' +
+        '<input type="button" value="Submit" id="submit">' + 
+        '</form>';
+    drawnItems.bindPopup(popupContent).openPopup();
+}
+
+// Submission - Sending to CARTO
+function setData() {
+
+    // Get user name and description
+    var enteredUsername = $("#input_name").val();
+    var enteredDescription = $("#input_desc").val();
+    
+    // For each drawn layer
+    drawnItems.eachLayer(function(layer) {
+    
+      // Create SQL expression to insert layer
+  		var drawing = JSON.stringify(layer.toGeoJSON().geometry);
+  		var sql = 
+  		    "INSERT INTO beer_sheva (the_geom, description, name) " + 
+  		    "VALUES (ST_SetSRID(ST_GeomFromGeoJSON('" + 
+  		    drawing + "'), 4326), '" + 
+  		    enteredDescription + "', '" + 
+  		    enteredUsername + "')";
+  		console.log(sql);
+  
+  		// Send the data
+  		$.post({
+  		    url: "https://michaeldorman.carto.com/api/v2/sql",
+  		    data: {"q": sql},
+  		    dataType: "json",
+  		    success: function() {
+  		        console.log("Data saved");
+  		    },
+  		    error: function() {
+  		        console.log("Problem saving the data");
+  		    }
+        });
+
+		// Transfer submitted drawing to the CARTO layer
+		var newData = layer.toGeoJSON();
+		newData.properties.description = enteredDescription;
+		newData.properties.name = enteredUsername;
+		L.geoJSON(newData, {onEachFeature: addPopup}).addTo(cartoData);
+
+	});
+	
+	// Clear drawn items layer
+	drawnItems.closePopup();
+	drawnItems.clearLayers();
+	
+}
+
+    </script>
+</body>
+</html>
+

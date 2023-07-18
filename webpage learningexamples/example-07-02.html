@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>GeoJSON viewer</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<link rel="stylesheet" href="css/leaflet.css">
+    <script src="js/leaflet.js"></script>
+    <script src="js/jquery.js"></script>
+    <style>
+        #map { 
+	        width: 60%;
+	        height: 100%;
+	        float: left;
+        }
+        #text {
+	        height: 100%;
+	        width: 40%;
+	        float: right;
+        }
+        #geojsontext {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 20px;
+            width: 90%;
+            height: 80%;
+        }
+        #submit {
+            margin: 20px;
+        }
+        html, body {
+	        height: 100%;
+	        margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div id="text">
+        <textarea id="geojsontext"></textarea>
+        <input type="button" id="submit" value="Submit">
+    </div>
+    <script>
+    
+var map = L.map("map").setView([0, 0], 1);
+L.tileLayer("https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_nolabels/{z}/{x}/{y}.png", {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attribution/">CartoDB</a>',
+    subdomains: "abcd",
+    maxZoom: 19
+}).addTo(map);
+
+// Add Layer Group
+var layers = L.layerGroup().addTo(map);
+
+// On submit - display layer from GeoJSON
+function showGeojson() {
+    layers.clearLayers();
+    var txt = $("#geojsontext").val();
+    txt = JSON.parse(txt);
+    L.geoJSON(txt).addTo(layers);
+}
+$("#submit").on("click", showGeojson);
+
+    </script>
+</body>
+</html>
+
+
+
+
+
+

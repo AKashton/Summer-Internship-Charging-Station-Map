@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Earth poles</title>
+    </head>
+    <body>
+        <h2>Earth Poles Viewer</h2>
+        <img id="myImage" src="images/north.svg"><br>
+        <input type="button" value="North Pole" id="north">
+        <input type="button" value="South Pole" id="south">
+        <script>
+            function showNorth() {
+                document
+                    .getElementById("myImage")
+                    .src = "images/north.svg";
+            }
+            function showSouth() {
+                document
+                    .getElementById("myImage")
+                    .src = "images/south.svg";
+            }
+            document
+                .getElementById("north")
+                .addEventListener("click", showNorth);
+            document
+                .getElementById("south")
+                .addEventListener("click", showSouth);
+        </script>
+    </body>
+</html>
+

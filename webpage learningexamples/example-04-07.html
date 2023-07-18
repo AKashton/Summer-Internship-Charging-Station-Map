@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Event object</title>
+        <script src="js/jquery.js"></script>
+    </head>
+    <body>
+        <p id="position"></p>
+        <script>
+            $(document).on("mousemove", function(e) {
+            	$("#position").text(e.pageX + " " + e.pageY);
+            });
+        </script>
+    </body>
+</html>

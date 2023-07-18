@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Linked view</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<link rel="stylesheet" href="css/leaflet.css">
+    <script src="js/leaflet.js"></script>
+    <script src="js/jquery.js"></script>
+    <style>
+        #map { 
+	        width: 80%;
+	        height: 100%;
+	        float: left;
+        }
+        #townslist {
+	        height: 100%;
+	        overflow-y: scroll;
+	        margin: 0px;
+        }
+        html, body {
+	        height: 100%;
+	        margin: 0;
+            padding: 0;
+        }
+        .highlight {
+            background-color: cyan;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <ul id="townslist"></ul>
+    <script>
+
+var map = L.map("map").setView([32, 35], 8);
+
+L.tileLayer("https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_nolabels/{z}/{x}/{y}.png", {
+	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attribution/">CartoDB</a>',
+	subdomains: "abcd",
+	maxZoom: 19
+}).addTo(map);
+
+// Load GeoJSON
+$.getJSON("data/towns.geojson", function(data) {
+    geojson = L.geoJSON(data, {style: normalStyle, onEachFeature: onEachFeature}).addTo(map);
+    $("#townslist li")
+        .on("mouseover", function(e) {
+            var hovered_item = e.target;
+            var hovered_id = $(hovered_item).data("value");
+            $(hovered_item).addClass("highlight");
+            geojson.getLayer(hovered_id).setStyle(highlightStyle);
+        })
+        .on("mouseout", function(e) {
+            var hovered_item = e.target;
+            var hovered_id = $(hovered_item).data("value");
+            geojson.resetStyle(geojson.getLayer(hovered_id));
+            $(hovered_item).removeClass("highlight");
+        });
+});
+
+// Highlighted polygon style
+var highlightStyle = {
+    weight: 5,
+    color: "#666",
+    dashArray: "",
+    fillOpacity: 0.7
+};
+
+// Normal polygon style
+var normalStyle = {
+    fillColor: "red",
+    weight: 1,
+    opacity: 1,
+    color: "gray",
+    fillOpacity: 0.25
+};
+
+// Function applied on each polygon load
+function onEachFeature(feature, layer) {
+    var town = feature.properties.town;
+    var name_eng = feature.properties.name_eng;
+    $("#townslist").append('<li data-value="' + town + '">' + name_eng + '</li>');
+    layer._leaflet_id = town;
+    layer
+        .on("mouseover", function(e) {
+            var hovered_feature = e.target;
+            hovered_feature.setStyle(highlightStyle);
+            hovered_feature.bringToFront();
+            $("li[data-value='" + hovered_feature._leaflet_id + "']")
+                .addClass("highlight")[0]
+                .scrollIntoView();
+        })
+        .on("mouseout", function(e) {
+            var hovered_feature = e.target;
+            geojson.resetStyle(hovered_feature);
+            $("li[data-value='" + hovered_feature._leaflet_id + "']")
+                .removeClass("highlight");
+        });
+}
+
+    </script>
+</body>
+</html>
+
+
+
+
+
+

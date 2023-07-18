@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Basic map</title>
+    <script src="js/leaflet.js"></script>
+    <link rel="stylesheet" href="css/leaflet.css">
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+        }
+        html, body, #map {
+            height: 100%;
+            width: 100%;
+        }
+        .legend {
+            font-size: 16px;
+	        line-height: 24px;
+	        color: #333333;
+	        font-family: 'Open Sans', Helvetica, sans-serif;
+	        padding: 10px 14px;
+	        background-color: rgba(245,245,220,0.8) ;
+	        box-shadow: 0 0 15px rgba(0,0,0,0.2);
+	        border-radius: 5px;
+	        max-width: 250px;
+	        border: 1px solid grey;
+        }
+        .legend p {
+	        font-size: 16px;
+	        line-height: 24px;
+        }
+        .legend img {
+	        max-width: 200px;
+	        margin: auto;
+	        display: block;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <script>
+    // Create variable to hold map element, give initial settings to map
+    var map = L.map("map", {center: [61.2176, -149.8997], zoom: 17});
+
+    // Add OpenStreetMap tile layer to map element
+    L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", 
+        {attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}
+    ).addTo(map);
+
+    //add a marker to map
+    let pnt = L.marker([61.2176, -149.8999]).addTo(map);
+
+    //add a circle marker to map
+    L.circle([61.2176, -149.8980], 
+        {radius: 50, color: "black", fillColor: "red"}).addTo(map);
+    
+    //adds a line to map
+    let line = L.polyline(
+        [[61.2170, -149.8970], [61.2199, -149.8960]], 
+        {color: "red", weight: 10}
+        ).addTo(map);
+    //adds a polygon to the map
+    let pol = L.polygon(
+        [
+            [61.2160, -149.8910],
+            [61.2150, -149.8930],
+            [61.2140, -149.8910],
+            [61.2137, -149.8909]
+        ],
+        {color: "red", fillColor: "yellow", weight: 4}  
+    ).addTo(map);
+
+    //shows a pop when clicking on map marker.
+    pnt.bindPopup(
+    "This is a marker showing Anchorage downtown area, <b>test</b>."
+    );
+
+    // Create Leaflet Control Object for Legend
+var legend = L.control({position: "bottomleft"});
+
+// Function that runs when legend is added to map
+legend.onAdd = function(map) {
+
+	// Create Div Element and Populate it with HTML
+	var div = L.DomUtil.create("div", "legend");		    
+    div.innerHTML = 
+        '<p><b>Simple shapes in Leaflet</b></p><hr>' +
+        '<p>This map shows an example of adding shapes on a Leaflet map</p>' +
+        'The following shapes were added:<br>' +
+        '<p><ul>' +
+        '<li>A marker</li>' +
+        '<li>A line</li>' +
+        '<li>A polygon</li>' +
+        '</ul></p>' +
+        'The marker layer has a <b>popup</b>. Click on the marker to see it!<hr>' +
+        'Created with the Leaflet library<br>' +
+        '<img src="images/leaflet.png">';
+
+	// Return the Legend div containing the HTML content
+	return div;
+
+};
+// Add Legend to Map
+legend.addTo(map);
+
+let popup = L.popup();
+
+map.addEventListener("click", 
+    function(e) {
+        popup
+            .setLatLng(e.latlng)
+            .setContent(
+                "You clicked the map at -<br>" + 
+                "<b>lon:</b> " + e.latlng.lng.toFixed(6) + "<br>" + 
+                "<b>lat:</b> " + e.latlng.lat.toFixed(6)
+            )
+            .openOn(map);
+});
+
+    </script>
+   
+    <!-- More content will go here [lat, long] -->
+</body>
+</html>

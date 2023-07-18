@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+    <head>
+	    <title>Map description customized</title>
+	    <link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet">
+	    <link href="https://fonts.googleapis.com/css?family=Lora" rel="stylesheet">
+		<link rel="stylesheet" href="css/leaflet.css">
+	    <script src="js/leaflet.js"></script>
+	    <style>
+		    body {
+			    margin: 0;
+			    padding: 0;
+			    background-color: "whitesmoke";
+			    font-family: "Noto Sans", sans-serif;
+			    color: #3d3d3d;
+		    }
+		    h1 {
+			    position: absolute;
+			    margin-top: 0;
+			    top: 10px;
+			    left: 55px;
+			    font-size: 2em;
+			    font-family: "Lora", serif;
+			    letter-spacing: .04em;
+			    padding: 10px 15px;
+			    background-color: rgba(255, 255, 255, .5);
+			    border: 1px solid grey;
+			    border-radius: 3px;
+			    z-index: 800;
+		    }
+		    h2 {
+			    font-family: "Lora", serif;
+			    letter-spacing: .04em;
+		    }
+		    #map {
+			    position: absolute;
+			    top: 0;
+			    bottom: 0;
+			    width: 100%;
+		    }
+		    #description {
+			    position: absolute;
+			    bottom: 0;
+			    left: 10px;
+			    width: 280px;
+			    margin-bottom: 20px;
+			    padding: 0 15px;
+			    background-color: rgba(255, 255, 255, .7);
+			    border: 1px solid grey;
+			    border-radius: 3px;
+			    z-index: 800;
+		    }
+		    p {
+			    font-size: .9em;
+			    line-height: 1.5em;
+		    }
+		    a {
+			    color: #005daa;
+			    text-decoration: none;
+		    }
+		    a:hover {
+			    text-decoration: underline;
+		    }
+	    </style>
+    </head>
+    <body>
+	    <h1>EV Charging station allocation model in Alaska</h1>
+		<div id="map"></div>
+        <div id="description">
+            <h2>About this map</h2>
+	        <p>This map shows the theoretical placement of EV charging stations along Alaska road corridors throughout the state.  </p>
+	        <p>We took data that accounted for temperature and battery degredation to model the placement distance of the charging stations from one another.
+               The result is what is shown on this map. 
+            </p>
+	        <p>Work in progress by Ashton Curry</p>
+        </div>
+		<script src="map.js"></script>
+    </body>
+</html>

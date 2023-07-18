@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Distance to nearest plants</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<link rel="stylesheet" href="css/leaflet.css">
+    <script src="js/leaflet.js"></script>
+    <script src="js/jquery.js"></script>
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+        }
+        html, body, #map {
+            height: 100%;
+            width: 100%;
+        }
+        div.popup {
+            text-align:center;
+        }
+    </style>
+</head>
+<body>
+	<div id="map"></div>
+	<script>
+var map = L.map("map").setView([32, 35], 8);
+
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+	maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+}).addTo(map);
+
+var myLocation = L.layerGroup().addTo(map);
+var plantLocations = L.layerGroup().addTo(map);
+var lines = L.layerGroup().addTo(map);
+var url = "https://michaeldorman.carto.com/api/v2/sql?format=GeoJSON&q=";
+
+// Set custom icon
+var redIcon = L.icon({
+   iconUrl: "images/redIcon.png",
+   shadowUrl: "images/marker-shadow.png",
+   iconAnchor: [13, 41]
+});
+
+// Listen to map click events
+map.on("click", mapClick);
+
+// Function that will run when user clicks on the map
+function mapClick(e) {
+    
+    // Get clicked coordinates
+    var clickCoords = e.latlng;
+    
+    // Clear map
+    myLocation.clearLayers();
+    plantLocations.clearLayers();
+    lines.clearLayers();
+    
+    // Add location marker
+    var locationMarker = L.marker(clickCoords, {icon: redIcon}).addTo(myLocation);
+    
+    // Set SQL query
+    var sqlQueryClosest = 
+        "SELECT id, name_lat, (the_geom::geography <-> ST_SetSRID(ST_MakePoint(" + 
+        clickCoords.lng + ", " + clickCoords.lat + 
+        "), 4326)::geography) / 1000 AS dist_km, the_geom FROM plants ORDER BY dist_km LIMIT 5;";
+    
+    // Get GeoJSON & add to map
+    $.getJSON(url + sqlQueryClosest, function(data) {
+        
+        // Add plant observations
+        var geojson = L.geoJSON(data, {
+            onEachFeature: function(feature, layer) {
+            
+                // Bind popup
+                layer.bindPopup(
+                    '<div class="popup"><i>' + 
+                    feature.properties.name_lat + '</i><br>' + 
+                    feature.properties.dist_km.toFixed(2) + 
+                    ' km</div>'
+                );
+                
+                // Draw line segment
+                var layerCoords = feature.geometry.coordinates;
+                var lineCoords = [
+                    [clickCoords.lat, clickCoords.lng], 
+                    [layerCoords[1], layerCoords[0]]
+                ];
+                L.polyline(
+                    lineCoords, 
+                    {color: "red", weight: 3, opacity: 0.75}
+                ).addTo(lines);
+                
+            }
+        }).addTo(plantLocations);
+
+    });
+
+}
+
+	</script>
+</body>
+</html>
+

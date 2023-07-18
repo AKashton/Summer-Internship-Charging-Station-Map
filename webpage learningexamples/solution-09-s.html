@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Species list</title>
+    <script src="js/jquery.js"></script>
+</head>
+<body>
+    <ul id="list"></ul>
+    <script>
+
+var url = "http://159.89.13.241/sql?q=";
+var sqlQuery = "SELECT DISTINCT name_lat FROM plants ORDER BY name_lat";
+
+$.getJSON(url + sqlQuery, function(data) {
+    $.each(data.features, function(key, value) {
+        $("#list").append("<li>" + value.properties.name_lat + "</li>");
+    });
+});
+
+    </script>
+</body>
+</html>
+

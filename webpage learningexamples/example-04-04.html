@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>jQuery event listener</title>
+        <script src="js/jquery.js"></script>
+    </head>
+    <body>
+        <p id="p1">Enter this paragraph.</p>
+        <script>
+            $("#p1")
+                .on("mouseover", function() {
+                    console.log("You entered p1!");
+                })
+                .on("mouseout", function() {
+                    console.log("You left p1!");
+                });
+        </script>
+    </body>
+</html>
+

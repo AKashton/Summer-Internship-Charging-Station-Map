@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Hello JavaScript</title>
+    </head>
+    <body>
+        <h2>JavaScript</h2>
+        <p id="demo">What can JavaScript do?</p>
+        <input type="button" value="Click Me!" id="change_text">
+        <script>
+            function hello() {
+                document
+                    .getElementById("demo")
+                    .innerHTML = 
+                        "JavaScript can change page contents!";
+            }
+            document
+                .getElementById("change_text")
+                .addEventListener("click", hello);
+        </script>
+    </body>
+</html>

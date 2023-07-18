@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Working with user input</title>
+        <script src="js/jquery.js"></script>
+    </head>
+    <body>
+        <p>First number 
+            <input type="number" id="num1" min="0" max="100" value="5">
+        </p>
+        <p>Second number 
+            <input type="number" id="num2" min="0" max="100" value="5">
+        </p>
+        <input type="button" id="multiply" value="Multiply!">
+        <p id="result"></p>
+        <script>
+            $("#multiply").on("click", function() {
+                $("#result").text("The result is: " + $("#num1").val() * $("#num2").val());
+            });
+        </script>
+    </body>
+</html>

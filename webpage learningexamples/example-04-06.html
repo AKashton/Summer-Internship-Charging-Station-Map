@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Earth poles (jQuery)</title>
+        <script src="js/jquery.js"></script>
+    </head>
+    <body>
+        <h2>Earth Poles Viewer</h2>
+        <img id="myImage" src="images/north.svg"><br>
+        <input type="button" value="North Pole" id="north">
+        <input type="button" value="South Pole" id="south">
+        <script>
+            function showNorth() {
+                $("#myImage")
+                    .attr("src", "images/north.svg");
+            }
+            function showSouth() {
+                $("#myImage")
+                    .attr("src", "images/south.svg");
+            }
+            $("#north").on("click", showNorth);
+            $("#south").on("click", showSouth);
+        </script>
+    </body>
+</html>
+

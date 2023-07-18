@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Travel plan map</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="css/leaflet.css">
+    <script src="js/leaflet.js"></script>
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+        }
+        html, body, #map {
+            height: 100%;
+            width: 100%;
+        }
+        .legend {
+            color: #333;
+            font-family: 'Open Sans', Helvetica, sans-serif;
+            padding: 6px 21px 6px 21px;
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            border: 2px solid rgba(0,0,0,0.2);
+            border-radius: 5px;
+        }
+        .legend h3 {
+            line-height: 5px;
+        }
+        .legend ul {
+            line-height: 15px;
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <script>
+
+// Tile layer
+var osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'});
+var imagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'});
+
+// Coordinates array (lat-lon)
+coords = [
+	[34.779244, -105.458131],
+	[18.559984, -98.146408],
+	[-3.784260, -73.862980],
+	[-23.808310, -69.142502]
+]
+
+// Markers
+var pnt = L.layerGroup();
+L.marker(coords[0]).bindPopup("<b>Day 1:</b><br>USA").addTo(pnt);
+L.marker(coords[1]).bindPopup("<b>Day 5:</b><br>Mexico").addTo(pnt);
+L.marker(coords[2]).bindPopup("<b>Day 10:</b><br>Peru").addTo(pnt);
+L.marker(coords[3]).bindPopup("<b>Day 15:</b><br>Chile").addTo(pnt);
+
+// Line
+var line = L.polyline(coords, {color: "red", weight: 7}).bindPopup("Travel Path");
+
+// Map
+var map = L.map('map', {center: [14, -87], zoom: 3, layers: [osm, pnt, line]});
+
+// Description
+var legend = L.control({position: "bottomleft"});
+legend.onAdd = function(map) {
+    var div = L.DomUtil.create("div", "legend");
+    div.innerHTML = 
+        '<h3>My travel plan</h3>' +
+        '<ul>' +
+        '<li>USA</li>' +
+        '<li>Mexico</li>' +
+        '<li>Peru</li>' +
+        '<li>Chile</li>' +
+        '</ul>'
+    return div;
+};
+legend.addTo(map);
+
+// Layer control
+var baseMaps = {
+    "OSM": osm,
+    "Imagery": imagery
+};
+var overlayMaps = {
+    "Sites": pnt,
+    "Travel Path": line
+};
+L.control.layers(baseMaps, overlayMaps, {position: "topleft", collapsed: false}).addTo(map);
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Expanded calculator</title>
+        <script src="js/jquery.js"></script>
+    </head>
+    <body>
+        <p>First number <input type="number" id="num1" min="0" max="100" value="5"></p>
+        <p>Second number <input type="number" id="num2" min="0" max="100" value="5"></p>
+        <input type="button" id="multiply" value="Multiply!">
+        <input type="button" id="divide" value="Divide!">
+        <input type="button" id="clear" value="Clear History">
+        <div id="result"></div>
+        <script>
+            $("#multiply").click(function() {
+                $("#result")
+                    .prepend("<p>" + $("#num1").val() + " * " + $("#num2").val() + " = " + $("#num1").val() * $("#num2").val() + "</p>");
+            });
+            $("#divide").click(function() {
+                $("#result")
+                    .prepend("<p>" + $("#num1").val() + " / " + $("#num2").val() + " = " + $("#num1").val() / $("#num2").val() + "</p>");
+            });
+            $("#clear").click(function() {
+                $("#result").html("");
+            });
+        </script>
+    </body>
+</html>

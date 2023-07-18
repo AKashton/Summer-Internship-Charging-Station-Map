@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Towns circle markers</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<link rel="stylesheet" href="css/leaflet.css">
+    <script src="js/leaflet.js"></script>
+    <script src="js/jquery.js"></script>
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+        }
+        html, body, #map {
+            height: 100%;
+            width: 100%;
+        }
+        .popup {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+	<div id="map"></div>
+	<script>
+	
+var map = L.map("map").setView([32, 35], 9);
+
+L.tileLayer("https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_nolabels/{z}/{x}/{y}.png", {
+	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attribution/">CartoDB</a>',
+	subdomains: "abcd",
+	maxZoom: 19
+}).addTo(map);
+
+function getColor(d) {
+    if(d > 2089.8) return "#b30000"; else
+    if(d > 933.2) return "#e34a33"; else
+    if(d > 642) return "#fc8d59"; else
+    if(d > 399) return "#fdcc8a"; else 
+        return "#fef0d9";
+}
+
+function getRadius(d) {
+    return Math.sqrt(d) / 12 + 2
+}
+
+function style(feature) {
+    return {
+        fillColor: getColor(feature.properties.pop_2015),
+        radius: getRadius(feature.properties.pop_2015),
+        weight: 0.5,
+        opacity: 1,
+        color: "black",
+        fillOpacity: 0.7
+    };
+}
+
+$.getJSON("data/towns_pnt.geojson", function(data) {
+    L.geoJSON(data, {
+        style: style,
+        onEachFeature: function(feature, layer) {
+            layer.bindPopup(
+                '<div class="popup">' + 
+                feature.properties.name_eng + '<br>' + 
+                '<b>' + feature.properties.pop_2015 + '</b>' + 
+                '</div>'
+            );
+        },
+        pointToLayer: function(geoJsonPoint, latlng) {
+            return L.circleMarker(latlng);
+        },
+    }).addTo(map);
+});
+
+	</script>
+</body>
+</html>
+

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Populating list</title>
+        <script src="js/jquery.js"></script>
+    </head>
+    <body>
+        <p>List of rare <i>Iris</i> species in Israel:</p>
+        <ul id="species"></ul>
+        <p>It was created dynamically using jQuery.</p>
+        <script>
+            var data = [
+                "Iris atrofusca",
+                "Iris atropurpurea",
+                "Iris bismarckiana",
+                "Iris haynei",
+                "Iris hermona",
+                "Iris lortetii",
+                "Iris mariae",
+                "Iris petrana"
+            ];
+            $.each(data, function(key, value) {
+                $("#species").append("<li><i>" + value + "</i></li>");
+            });
+        </script>
+    </body>
+</html>
