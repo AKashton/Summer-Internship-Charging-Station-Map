@@ -118,6 +118,14 @@ map.addEventListener("click",
             .openOn(map);
 });
 
+fetch("AlaskaHW.geojson")
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(data) {
+        L.geoJSON(data).addTo(map);
+    });
+
     </script>
    
     <!-- More content will go here [lat, long] -->
