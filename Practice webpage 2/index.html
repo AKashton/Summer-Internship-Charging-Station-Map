@@ -125,6 +125,11 @@ $.getJSON("AlaskaHW.geojson", function(data) {
     L.geoJSON(data).addTo(map);
 });
 
+// load GeoJSON from an external file
+$.getJSON("AK_existing_EVstations.geojson", function(data) {
+    // add GeoJSON layer to the map once the file is loaded
+    L.geoJSON(data).addTo(map);
+});
     </script>
    
     <!-- More content will go here [lat, long] -->
