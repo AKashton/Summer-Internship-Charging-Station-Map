@@ -55,27 +55,6 @@
     //add a circle marker to map
     L.circle([61.2176, -149.8980], 
         {radius: 50, color: "black", fillColor: "red"}).addTo(map);
-    
-    //adds a line to map
-    let line = L.polyline(
-        [[61.2170, -149.8970], [61.2199, -149.8960]], 
-        {color: "red", weight: 10}
-        ).addTo(map);
-    //adds a polygon to the map
-    let pol = L.polygon(
-        [
-            [61.2160, -149.8910],
-            [61.2150, -149.8930],
-            [61.2140, -149.8910],
-            [61.2137, -149.8909]
-        ],
-        {color: "red", fillColor: "yellow", weight: 4}  
-    ).addTo(map);
-
-    //shows a pop when clicking on map marker.
-    pnt.bindPopup(
-    "This is a marker showing Anchorage downtown area, <b>test</b>."
-    );
 
     // Create Leaflet Control Object for Legend
 var legend = L.control({position: "bottomleft"});
@@ -126,7 +105,7 @@ $.getJSON("AlaskaHW.geojson", function(data) {
 });
 
 // load GeoJSON from an external file
-$.getJSON("AK_alt_fuel_stations.geojson", function(data) {
+$.getJSON("AK_charge_fast.geojson", function(data) {
     // add GeoJSON layer to the map once the file is loaded
     L.geoJSON(data).addTo(map);
 });
