@@ -97,7 +97,14 @@ map.addEventListener("click",
             )
             .openOn(map);
 });
+var Theoretical_Station = L.icon({
+    iconUrl: 'images/redIcon.png',
+    //shadowUrl: 'leaf-shadow.png',
 
+    iconSize: [40, 40], // Set the width and height of your icon in pixels
+    iconAnchor: [20, 40], // Set the anchor point of the icon (where it should point to the map coordinates)
+    popupAnchor: [0, -40] // Set the anchor point for popups relative to the icon
+});
 // load GeoJSON from an external file
 $.getJSON("AlaskaHW.geojson", function(data) {
     // add GeoJSON layer to the map once the file is loaded
@@ -113,7 +120,13 @@ $.getJSON("AK_charge_fast.geojson", function(data) {
 // load GeoJSON from an external file
 $.getJSON("50_mile_mark.geojson", function(data) {
     // add GeoJSON layer to the map once the file is loaded
-    L.geoJSON(data).addTo(map);
+ L.geoJSON(data, {
+        pointToLayer: function (feature, latlng) {
+            return L.marker(latlng, {
+                icon: Theoretical_Station // Use your custom icon for each marker
+            });
+        }
+    }).addTo(map);
 });
     </script>
    
