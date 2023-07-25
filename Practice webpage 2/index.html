@@ -109,6 +109,12 @@ $.getJSON("AK_charge_fast.geojson", function(data) {
     // add GeoJSON layer to the map once the file is loaded
     L.geoJSON(data).addTo(map);
 });
+
+// load GeoJSON from an external file
+$.getJSON("markers.geojson", function(data) {
+    // add GeoJSON layer to the map once the file is loaded
+    L.geoJSON(data).addTo(map);
+});
     </script>
    
     <!-- More content will go here [lat, long] -->
