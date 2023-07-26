@@ -102,7 +102,7 @@ var Theoretical_Station = L.icon({
 });
 
 //custom yellow icon for under construction charging station loctaions
-var coming_soon_Station = L.icon({
+var Coming_Soon_Station = L.icon({
     iconUrl: 'images/yellow icon.png',
     //shadowUrl: 'leaf-shadow.png',
 
@@ -141,7 +141,7 @@ $.getJSON("Under_Construction_EV_Charge.geojson", function(data) {
  L.geoJSON(data, {
         pointToLayer: function (feature, latlng) {
             return L.marker(latlng, {
-                icon: coming_soon_Station // Use your custom icon for each marker
+                icon: Coming_Soon_Station // Use your custom icon for each marker
             });
         }
     }).addTo(map);
