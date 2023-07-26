@@ -111,20 +111,20 @@ var Coming_Soon_Station = L.icon({
     //popupAnchor: [0, -40] // Set the anchor point for popups relative to the icon
 });
 	    
-// load GeoJSON from an external file
+// load GeoJSON from an external file for the road system
 $.getJSON("AlaskaHW.geojson", function(data) {
     // add GeoJSON layer to the map once the file is loaded
     L.geoJSON(data).addTo(map);
 });
 
-// load GeoJSON from an external file
+// load GeoJSON from an external file for current fast charging stations
 $.getJSON("AK_charge_fast.geojson", function(data) {
     // add GeoJSON layer to the map once the file is loaded
     L.geoJSON(data).addTo(map);
 });
 
-// load GeoJSON from an external file
-$.getJSON("test_data.geojson", function(data) {
+// load GeoJSON from an external file for theoretical stations
+$.getJSON("Theoretical_Stations.geojson", function(data) {
     // add GeoJSON layer to the map once the file is loaded
  L.geoJSON(data, {
         pointToLayer: function (feature, latlng) {
@@ -135,7 +135,7 @@ $.getJSON("test_data.geojson", function(data) {
     }).addTo(map);
 });
 
-// load GeoJSON from an external file
+// load GeoJSON from an external file for charging stations under construction
 $.getJSON("Under_Construction_EV_Charge.geojson", function(data) {
     // add GeoJSON layer to the map once the file is loaded
  L.geoJSON(data, {
