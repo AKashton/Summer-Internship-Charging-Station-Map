@@ -49,13 +49,6 @@
         {attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}
     ).addTo(map);
 
-    //add a marker to map
-    let pnt = L.marker([61.2176, -149.8999]).addTo(map);
-
-    //add a circle marker to map
-    L.circle([61.2176, -149.8980], 
-        {radius: 50, color: "black", fillColor: "red"}).addTo(map);
-
     // Create Leaflet Control Object for Legend
 var legend = L.control({position: "bottomleft"});
 
@@ -97,6 +90,8 @@ map.addEventListener("click",
             )
             .openOn(map);
 });
+
+//custom icon for theoretical charging station locations
 var Theoretical_Station = L.icon({
     iconUrl: 'images/redIcon.png',
     //shadowUrl: 'leaf-shadow.png',
@@ -105,6 +100,17 @@ var Theoretical_Station = L.icon({
     iconAnchor: [13, 41], // Set the anchor point of the icon (where it should point to the map coordinates)
     //popupAnchor: [0, -40] // Set the anchor point for popups relative to the icon
 });
+
+//custom yellow icon for under construction charging station loctaions
+var coming_soon_Station = L.icon({
+    iconUrl: 'images/redIcon.png',
+    //shadowUrl: 'leaf-shadow.png',
+
+    iconSize: [25, 41], // Set the width and height of your icon in pixels
+    iconAnchor: [13, 41], // Set the anchor point of the icon (where it should point to the map coordinates)
+    //popupAnchor: [0, -40] // Set the anchor point for popups relative to the icon
+});
+	    
 // load GeoJSON from an external file
 $.getJSON("AlaskaHW.geojson", function(data) {
     // add GeoJSON layer to the map once the file is loaded
